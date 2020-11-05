@@ -52,7 +52,6 @@ def on_key_down(key):
 
     if key == keys.RETURN: # debute la calculatrice
         splash = False
-        get_operation = True
 
 
 def on_mouse_down(pos):
@@ -108,8 +107,8 @@ def on_mouse_down(pos):
                 # utilise l'opérateur comme séparateur de texte, produisant une liste de 2 éléments
                 nums = expr.split(op)
 
-                # effectue le calcule sur la liste avec l'opérateur choisie
-                ans = operation(nums, op)
+                # effectue le calcul sur la liste avec l'opérateur choisie
+                ans = calculate(nums, op)
 
                 # remettre les variables à la condition de départ pour un nouveau calcul
                 splash = True
@@ -118,7 +117,7 @@ def on_mouse_down(pos):
                 op = ''
     
 
-def operation(two_numbers, op):
+def calculate(two_numbers, op):
 
     # convertir les éléments de texte en valeurs décimales
     a = float(two_numbers[0])
