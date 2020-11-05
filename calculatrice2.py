@@ -1,4 +1,4 @@
-import pgzero
+import pgzrun
 
 WIDTH = 600  #Dans ce bloc je definis toutes les variables.
 HEIGHT = 852
@@ -11,14 +11,14 @@ subtracting = False #soustrait
 multiplying = False #mulitplie
 dividing = False#divise
 giveans = False #vrai lorsquon donne la reponse
-a = 0 # premier chiffre
-b = 0 # deuxieme chiffre
-c = 0 # operateur qui sera affiche au GUI
-ans = 0 # reponse
-a = str(a)
-b = str(b)
-c = str(c)
-ans = str(ans)
+a = "0" # premier chiffre -> sera affiché au début
+b = "" # deuxieme chiffre -> vide au début
+c = "" # operateur qui sera affiche au GUI -> vide au début
+ans = 0.0 # reponse nulle au début
+#a = str(a)
+#b = str(b)
+#c = str(c)
+#ans = str(ans)
 BOX = Rect((30, 50), (550, 180))
 SBOX7 = Rect((45, 295), (110, 110)) #Ce bloc definit les rectangles qui serviront de bouttons pour entrer des nombres dans la calculatrice.
 SBOX8 = Rect((185, 295), (110, 110))
@@ -39,24 +39,28 @@ SBOXE = Rect((315, 700), (110, 110))
 
 
 def draw():
-    global a, b, c, ans
+    # global a, b, c, ans # tu ne les modifies pas
     screen.clear()
     screen.blit('background', (0,0))
+    
     if not giveans and not waiting: #affiche la question pendant que l'utilisateur l'entre
-        screen.draw.text(a+c+b, topleft=(35, 130), color=(0, 0, 0), fontsize=48)
+        to_show = str(a+c+b)
     else:
-        screen.draw.text(ans, topleft=(35, 130), color=(0, 0, 0), fontsize = 48) #affiche la reponse
+        to_show = str(ans) #affiche la reponse
     if waiting:
-        screen.draw.text('Press Enter to use the calculator', topleft=(35, 130), color=(0, 0, 0,), fontsize=48) #affiche le message d'acceuil
+        to_show = 'Press Enter to use the calculator' #affiche le message d'acceuil
+
+    screen.draw.text(to_show, topleft=(35, 130), color=(0, 0, 0), fontsize=48)
 def on_key_down(key):
-    global waiting
-    global ent_num1
+    global waiting, ent_num1, a
     if key==keys.RETURN: # debute la calculatrice
         waiting = False
         ent_num1 = True
+        a = "" # enlève le premier 0
 def on_mouse_down(pos):
-    global waiting, ent_num1, ent_num2, op, adding, subtracting, multiplying, dividing, a, b, c, SBOX0, SBOX1, SBOX2, SBOX3, SBOX4, SBOX5, SBOX6, SBOX7, SBOX7, SBOX8, SBOX9, SBOXP, SBOXN, SBOXM, SBOXV, SBOXD, SBOXE
-    while ent_num1 == True: # recoit les intrants et construit un str representant le premier nombre
+    global waiting, giveans, ent_num1, ent_num2, op, adding, subtracting, multiplying, dividing, a, b, c, ans
+    # global SBOX0, SBOX1, SBOX2, SBOX3, SBOX4, SBOX5, SBOX6, SBOX7, SBOX7, SBOX8, SBOX9, SBOXP, SBOXN, SBOXM, SBOXV, SBOXD, SBOXE
+    if ent_num1 == True: # recoit les intrants et construit un str representant le premier nombre
         if SBOX0.collidepoint(pos):
             a = a + '0'
         if  SBOX1.collidepoint(pos):
@@ -80,26 +84,29 @@ def on_mouse_down(pos):
         if  SBOXV.collidepoint(pos):
             a = a + '.'
         if  SBOXP.collidepoint(pos) or SBOXN.collidepoint(pos) or SBOXM.collidepoint(pos) or SBOXD.collidepoint(pos):
-            ent_num1 is False and op is True # arrete d'attendre des intrants pour le premier nombre et attend un intrant pour l'operateur
-    while op == True: # attend un intrant operateur
+            ent_num1 = False
+            op = True
+            #ent_num1 is False and op is True # arrete d'attendre des intrants pour le premier nombre et attend un intrant pour l'operateur
+    if op == True: # attend un intrant operateur
         if  SBOXP.collidepoint(pos):
             adding = True
             ent_num2 = True
             c = '+'
-        if  SBOXN.collidepoint(pos):
+        elif  SBOXN.collidepoint(pos):
             subtracting = True
             ent_num2 = True
             c = '-'
-        if  SBOXM.collidepoint(pos):
+        elif  SBOXM.collidepoint(pos):
             multiplying = True
             ent_num2 = True
             c = '*'
-        if SBOXD.collidepoint(pos):
+        elif SBOXD.collidepoint(pos):
             dividing = True
             ent_num2 = True
             c = '/'
         op = False
-    while ent_num2 == True: #attend un intrant pour le d
+        ent_num2 = True
+    if ent_num2 == True: #attend un intrant pour le d
         if  SBOX0.collidepoint(pos):
             b = b + '0'
         if  SBOX1.collidepoint(pos):
@@ -122,13 +129,15 @@ def on_mouse_down(pos):
             b = b + '9'
         if  SBOXV.collidepoint(pos):
             b = b + '.'
-        if  SBOXP.collidepoint(pos) or SBOXN.collidepoint(pos) or SBOXM.collidepoint(pos) or SBOXD.collidepoint(pos):
-            ent_num1 = False
-    while  SBOXE.collidepoint(pos):
+        if  SBOXE.collidepoint(pos): # juste =
+        # if  SBOXP.collidepoint(pos) or SBOXN.collidepoint(pos) or SBOXM.collidepoint(pos) or SBOXD.collidepoint(pos):
+            ent_num2 = False
+    if  SBOXE.collidepoint(pos):
+        giveans = True
         a = float(a)
         b = float(b)
-        c = float(c)
-        ans = float(ans)
+        #c = float(c) # c'est l'opérateur, pas un nombre
+        #ans = float(ans) #inutile
         if adding:
             ans = a + b
             adding = False
@@ -142,3 +151,4 @@ def on_mouse_down(pos):
             ans = a / b
             dividing = False
 
+pgzrun.go()
