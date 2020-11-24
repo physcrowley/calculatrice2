@@ -1,5 +1,5 @@
 import pgzrun
-
+ 
 WIDTH = 600  #Dans ce bloc je definis toutes les variables.
 HEIGHT = 852
 waiting = True  #message d'acceuil
@@ -134,21 +134,24 @@ def on_mouse_down(pos):
             ent_num2 = False
     if  SBOXE.collidepoint(pos):
         giveans = True
-        a = float(a)
-        b = float(b)
+        x = float(a)
+        y = float(b)
         #c = float(c) # c'est l'opérateur, pas un nombre
         #ans = float(ans) #inutile
-        if adding:
-            ans = a + b
+        if c == '+':
+            ans = x + y
             adding = False
         if subtracting:
-            ans = a - b
+            ans = x - y
             subtracting = False
         if multiplying:
-            ans = a * b
+            ans = x * y
             multiplying = False
         if dividing:
-            ans = a / b
+            ans = x / y
             dividing = False
+        a = ''
+        b = ''
+        c = ''
 
 pgzrun.go()
